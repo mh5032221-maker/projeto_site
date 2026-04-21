@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Empresa+</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    radial-gradient(circle at top left,#1e293b 0%,#0f172a 35%,#020617 100%);
+    color:#e2e8f0;
+    padding:20px;
+}
+
+.box{
+    width:100%;
+    max-width:430px;
+    background:rgba(15,23,42,0.88);
+    border:1px solid rgba(148,163,184,0.12);
+    border-radius:24px;
+    padding:34px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.28);
+    backdrop-filter:blur(10px);
+}
+
+.logo{
+    text-align:center;
+    font-size:32px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:8px;
+}
+
+.logo span{
+    color:#38bdf8;
+}
+
+.subtitle{
+    text-align:center;
+    color:#94a3b8;
+    margin-bottom:26px;
+    font-size:15px;
+}
+
+.alert{
+    background:rgba(30,64,175,0.18);
+    color:#dbeafe;
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:18px;
+    text-align:center;
+    font-size:14px;
+}
+
+.input-group{
+    margin-bottom:16px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:7px;
+    color:#cbd5e1;
+    font-size:14px;
+    font-weight:600;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid rgba(148,163,184,0.15);
+    background:rgba(255,255,255,0.04);
+    color:#fff;
+    outline:none;
+    font-size:15px;
+}
+
+.input-group input::placeholder{
+    color:#94a3b8;
+}
+
+.input-group input:focus{
+    border-color:#38bdf8;
+    box-shadow:0 0 0 3px rgba(56,189,248,0.15);
+}
+
+.btn{
+    width:100%;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+    margin-top:6px;
+    transition:0.2s;
+}
+
+.btn:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.05);
+}
+
+.links{
+    margin-top:18px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.link{
+    color:#38bdf8;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+}
+
+.link:hover{
+    text-decoration:underline;
+}
+
+.footer{
+    margin-top:22px;
+    text-align:center;
+    color:#64748b;
+    font-size:13px;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+    <div class="logo">Empresa<span>+</span></div>
+    <div class="subtitle">Acesse seu painel de gestão</div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/">
+        <div class="input-group">
+            <label>Usuário</label>
+            <input type="text" name="nome" placeholder="Digite seu usuário" required>
+        </div>
+
+        <div class="input-group">
+            <label>Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha" required>
+        </div>
+
+        <button type="submit" class="btn">Entrar no sistema</button>
+    </form>
+
+    <div class="links">
+        <a href="/recuperar-senha" class="link">Esqueci minha senha</a>
+        <a href="/" class="link">Atualizar página</a>
+    </div>
+
+    <div class="footer">
+        Sistema empresarial seguro • Empresa+
+    </div>
+
+</div>
+
+</body>
+</html>

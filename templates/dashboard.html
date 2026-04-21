@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Premium</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+    background:
+    radial-gradient(circle at top left,#1e293b 0%,#0f172a 35%,#020617 100%);
+    color:#e2e8f0;
+}
+
+.layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:260px;
+    background:rgba(15,23,42,0.88);
+    border-right:1px solid rgba(148,163,184,0.12);
+    backdrop-filter:blur(10px);
+    padding:25px;
+}
+
+.brand{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:25px;
+    color:#fff;
+}
+
+.brand span{
+    color:#38bdf8;
+}
+
+.user-box{
+    background:rgba(255,255,255,0.05);
+    padding:15px;
+    border-radius:18px;
+    margin-bottom:25px;
+}
+
+.user-box strong{
+    color:#cbd5e1;
+}
+
+.menu a{
+    display:block;
+    text-decoration:none;
+    color:#cbd5e1;
+    padding:13px 15px;
+    border-radius:14px;
+    margin-bottom:10px;
+    transition:0.2s;
+    font-weight:600;
+}
+
+.menu a:hover{
+    background:rgba(59,130,246,0.15);
+    color:#fff;
+}
+
+.main{
+    flex:1;
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:22px;
+}
+
+.topbar h1{
+    font-size:32px;
+    color:#fff;
+}
+
+.topbar p{
+    color:#94a3b8;
+    margin-top:5px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:16px;
+    margin-bottom:22px;
+}
+
+.card,.panel{
+    background:rgba(15,23,42,0.75);
+    border:1px solid rgba(148,163,184,0.10);
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.22);
+}
+
+.card small{
+    color:#94a3b8;
+}
+
+.card h2{
+    margin-top:8px;
+    font-size:28px;
+    color:#fff;
+}
+
+.panel{
+    margin-bottom:22px;
+}
+
+.panel h3{
+    margin-bottom:16px;
+    color:#fff;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:13px;
+    border-radius:14px;
+    border:1px solid rgba(148,163,184,0.15);
+    background:rgba(255,255,255,0.04);
+    color:#fff;
+    outline:none;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#94a3b8;
+}
+
+select option{
+    color:#000;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color:#38bdf8;
+    box-shadow:0 0 0 3px rgba(56,189,248,0.15);
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:13px 18px;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.btn-green{
+    background:linear-gradient(135deg,#16a34a,#15803d);
+}
+
+.logout-btn{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+}
+
+.search-box{
+    margin-bottom:15px;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px 12px;
+    text-align:left;
+    white-space:nowrap;
+    vertical-align:top;
+}
+
+th{
+    background:rgba(30,41,59,0.9);
+    color:#fff;
+}
+
+td{
+    border-bottom:1px solid rgba(148,163,184,0.10);
+}
+
+tr:hover td{
+    background:rgba(255,255,255,0.03);
+}
+
+.action{
+    padding:8px 12px;
+    border-radius:12px;
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    display:inline-block;
+    margin:2px;
+}
+
+.edit{ background:#16a34a; }
+.delete{ background:#dc2626; }
+.whatsapp{ background:#22c55e; }
+.email{ background:#0ea5e9; }
+
+.alert{
+    background:rgba(30,64,175,0.18);
+    color:#dbeafe;
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:18px;
+}
+
+.two-cols{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:20px;
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.badge-admin{
+    background:#7c3aed;
+    color:#fff;
+}
+
+.badge-gerente{
+    background:#0ea5e9;
+    color:#fff;
+}
+
+.badge-funcionario{
+    background:#16a34a;
+    color:#fff;
+}
+
+@media(max-width:1100px){
+    .two-cols{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:900px){
+    .layout{
+        flex-direction:column;
+    }
+
+    .sidebar{
+        width:100%;
+    }
+}
+</style>
+
+<script>
+function formatarCPF(campo){
+    let valor = campo.value.replace(/\D/g,'');
+
+    if(valor.length > 11){
+        valor = valor.slice(0,11);
+    }
+
+    valor = valor.replace(/^(\d{3})(\d)/,'$1.$2');
+    valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3');
+    valor = valor.replace(/\.(\d{3})(\d)/,'.$1-$2');
+
+    campo.value = valor;
+}
+</script>
+</head>
+<body>
+
+<div class="layout">
+
+<aside class="sidebar">
+    <div class="brand">Empresa<span>+</span></div>
+
+    <div class="user-box">
+        <strong>Logado como:</strong><br>
+        {{ usuario_logado }}<br><br>
+        <strong>Você é:</strong><br>
+        {{ cargo }}
+    </div>
+
+    <nav class="menu">
+        <a href="/dashboard">Dashboard</a>
+        <a href="#usuarios">Usuários</a>
+        <a href="#clientes">Clientes</a>
+        <a href="#financeiro">Financeiro</a>
+        <a href="/logout">Sair</a>
+    </nav>
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+    <div>
+        <h1>Painel Premium</h1>
+        <p>Visão geral do negócio em tempo real</p>
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="/exportar/excel" class="btn-primary">Exportar Excel</a>
+        <a href="/logout" class="btn-primary logout-btn">Encerrar sessão</a>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert">{{ messages[0] }}</div>
+{% endif %}
+{% endwith %}
+
+<section class="cards">
+    <div class="card">
+        <small>Total de clientes</small>
+        <h2>{{ total_clientes }}</h2>
+    </div>
+
+    <div class="card">
+        <small>Clientes ativos</small>
+        <h2>{{ clientes_ativos }}</h2>
+    </div>
+
+    <div class="card">
+        <small>Entradas</small>
+        <h2>R$ {{ '%.2f'|format(total_entradas) }}</h2>
+    </div>
+
+    <div class="card">
+        <small>Saídas</small>
+        <h2>R$ {{ '%.2f'|format(total_saidas) }}</h2>
+    </div>
+
+    <div class="card">
+        <small>Saldo</small>
+        <h2>R$ {{ '%.2f'|format(saldo) }}</h2>
+    </div>
+</section>
+
+{% if cargo == "Admin" %}
+<section class="panel" id="usuarios">
+    <h3>Cadastrar usuário do sistema</h3>
+
+    <form method="POST" action="/usuarios/cadastrar">
+        <div class="form-grid">
+            <input name="nome" placeholder="Nome do usuário">
+            <input type="password" name="senha" placeholder="Senha do usuário">
+            <select name="cargo">
+                <option value="">Selecione o cargo</option>
+                <option value="Admin">Admin</option>
+                <option value="Gerente">Gerente</option>
+                <option value="Funcionario">Funcionário</option>
+            </select>
+        </div>
+
+        <div style="margin-top:14px;">
+            <button type="submit" class="btn-primary">Cadastrar usuário</button>
+        </div>
+    </form>
+</section>
+
+<section class="panel">
+    <h3>Usuários do sistema</h3>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Cargo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for u in usuarios_sistema %}
+                <tr>
+                    <td>{{ u[0] }}</td>
+                    <td>{{ u[1] }}</td>
+                    <td>
+                        {% if u[2] == "Admin" %}
+                            <span class="badge badge-admin">Admin</span>
+                        {% elif u[2] == "Gerente" %}
+                            <span class="badge badge-gerente">Gerente</span>
+                        {% else %}
+                            <span class="badge badge-funcionario">Funcionário</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/usuarios/excluir/{{ u[0] }}" class="action delete">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+<div class="two-cols">
+    <section class="panel">
+        <h3>Desempenho financeiro</h3>
+
+        <canvas
+        id="graficoFinanceiro"
+        data-labels='{{ grafico_labels | tojson | safe }}'
+        data-valores='{{ grafico_valores | tojson | safe }}'>
+        </canvas>
+    </section>
+
+    {% if cargo in ["Admin", "Gerente"] %}
+    <section class="panel" id="financeiro">
+        <h3>Novo lançamento financeiro</h3>
+
+        <form method="POST" action="/financeiro/lancar">
+            <div class="form-grid">
+                <input name="descricao" placeholder="Descrição">
+                <select name="tipo">
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saída">Saída</option>
+                </select>
+                <input name="valor" placeholder="Valor ex: 1500.00">
+                <input type="date" name="data_lancamento">
+            </div>
+
+            <div style="margin-top:14px;">
+                <button type="submit" class="btn-primary btn-green">Registrar lançamento</button>
+            </div>
+        </form>
+    </section>
+    {% endif %}
+</div>
+
+<section class="panel" id="clientes">
+    <h3>Cadastrar novo cliente</h3>
+
+    <form method="POST" action="/clientes/cadastrar">
+        <div class="form-grid">
+            <input name="nome" placeholder="Nome completo">
+            <input name="cpf" placeholder="CPF" maxlength="14" onkeyup="formatarCPF(this)">
+            <input type="date" name="nascimento">
+            <input name="telefone" placeholder="Telefone">
+            <input name="email" placeholder="E-mail">
+
+            <select name="status">
+                <option value="">Selecione o status</option>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+                <option value="Pendente">Pendente</option>
+            </select>
+
+            <input type="password" name="senha_cliente" placeholder="Senha do cliente">
+
+            <textarea name="observacoes" placeholder="Observações"></textarea>
+        </div>
+
+        <div style="margin-top:14px;">
+            <button type="submit" class="btn-primary">Cadastrar cliente</button>
+        </div>
+    </form>
+</section>
+
+<section class="panel">
+    <h3>Lista de clientes</h3>
+
+    <form method="GET" action="/dashboard" class="search-box">
+        <input type="text" name="busca" value="{{ busca }}" placeholder="Buscar cliente">
+    </form>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Nascimento</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td>{{ c[0] }}</td>
+                    <td>{{ c[1] }}</td>
+                    <td>{{ c[2] }}</td>
+                    <td>{{ c[3] }}</td>
+                    <td>{{ c[4] }}</td>
+                    <td>{{ c[5] }}</td>
+                    <td>{{ c[6] }}</td>
+                    <td>
+                        <a href="/clientes/editar/{{ c[0] }}" class="action edit">Editar</a>
+
+                        {% if cargo in ["Admin", "Gerente"] %}
+                        <a href="/clientes/excluir/{{ c[0] }}" class="action delete">Excluir</a>
+                        {% endif %}
+
+                        <a
+                        href="https://wa.me/55{{ c[4] | replace('(', '') | replace(')', '') | replace('-', '') | replace(' ', '') }}?text=Olá%20{{ c[1] | replace(' ', '%20') }},%20entrando%20em%20contato%20pela%20Empresa%2B."
+                        target="_blank"
+                        class="action whatsapp">WhatsApp</a>
+
+                        <a href="/enviar/email/{{ c[0] }}" class="action email">Enviar E-mail</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const canvas = document.getElementById("graficoFinanceiro");
+const labels = JSON.parse(canvas.dataset.labels || "[]");
+const valores = JSON.parse(canvas.dataset.valores || "[]");
+
+new Chart(canvas,{
+    type:"bar",
+    data:{
+        labels:labels,
+        datasets:[{
+            label:"Resultado mensal",
+            data:valores,
+            borderWidth:1
+        }]
+    },
+    options:{
+        responsive:true,
+        plugins:{
+            legend:{
+                labels:{ color:"#fff" }
+            }
+        },
+        scales:{
+            x:{
+                ticks:{ color:"#cbd5e1" },
+                grid:{ color:"rgba(148,163,184,0.15)" }
+            },
+            y:{
+                ticks:{ color:"#cbd5e1" },
+                grid:{ color:"rgba(148,163,184,0.15)" }
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

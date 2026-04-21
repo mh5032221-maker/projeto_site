@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Sistema Empresarial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .layout {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #0f172a;
+        color: white;
+        padding: 24px 18px;
+    }
+
+    .brand {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .user-box {
+        background: rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 24px;
+    }
+
+    .menu a {
+        display: block;
+        color: #cbd5e1;
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+
+    .menu a:hover {
+        background: #1e293b;
+        color: white;
+    }
+
+    .main {
+        flex: 1;
+        padding: 28px;
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 22px;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .logout-btn {
+        background: #ef4444;
+        color: white;
+        text-decoration: none;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-weight: bold;
+    }
+
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .card small {
+        color: #64748b;
+    }
+
+    .card h2 {
+        margin: 10px 0 0;
+        font-size: 30px;
+    }
+
+    .panel {
+        background: white;
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        margin-bottom: 22px;
+    }
+
+    .panel h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #2563eb;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .search-box {
+        margin-bottom: 16px;
+    }
+
+    .table-wrap {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    th {
+        background: #f8fafc;
+        color: #334155;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .action {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .edit {
+        background: #22c55e;
+    }
+
+    .delete {
+        background: #ef4444;
+    }
+
+    .alert {
+        background: #dbeafe;
+        color: #1e3a8a;
+        border: 1px solid #bfdbfe;
+        padding: 14px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+
+    @media (max-width: 900px) {
+        .layout {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            width: 100%;
+            height: auto;
+        }
+    }
+</style>
+
+<script>
+function formatarCPF(campo) {
+    let valor = campo.value.replace(/\D/g, '');
+
+    if (valor.length > 11) {
+        valor = valor.slice(0, 11);
+    }
+
+    valor = valor.replace(/^(\d{3})(\d)/, '$1.$2');
+    valor = valor.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+    valor = valor.replace(/\.(\d{3})(\d)/, '.$1-$2');
+
+    campo.value = valor;
+}
+
+function buscarTempoReal() {
+    let input = document.getElementById("buscaTabela").value.toLowerCase();
+    let linhas = document.querySelectorAll("tbody tr");
+
+    linhas.forEach(linha => {
+        let texto = linha.innerText.toLowerCase();
+        linha.style.display = texto.includes(input) ? "" : "none";
+    });
+}
+</script>
+
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="brand">Empresa+</div>
+
+        <div class="user-box">
+            <div><strong>Logado como:</strong></div>
+            <div>{{ usuario_logado }}</div>
+        </div>
+
+        <nav class="menu">
+            <a href="/sistema">Dashboard</a>
+            <a href="/logout">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="topbar">
+            <h1>Painel de Controle</h1>
+            <a href="/logout" class="logout-btn">Encerrar sessão</a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="cards">
+            <div class="card">
+                <small>Total de usuários</small>
+                <h2>{{ total_usuarios }}</h2>
+            </div>
+
+            <div class="card">
+                <small>Busca atual</small>
+                <h2>{% if busca %}{{ busca }}{% else %}Todos{% endif %}</h2>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h3>Cadastrar novo usuário</h3>
+
+            <form method="POST" action="/cadastrar">
+                <div class="form-grid">
+                    <input name="nome" placeholder="Nome completo">
+                    <input type="password" name="senha" placeholder="Senha escolhida pelo cliente">
+                    <input type="date" name="nascimento">
+                    <input name="cpf" placeholder="CPF" maxlength="14" onkeyup="formatarCPF(this)">
+                </div>
+
+                <div style="margin-top: 14px;">
+                    <button type="submit" class="btn-primary">Cadastrar usuário</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h3>Lista de usuários</h3>
+
+            <form method="GET" action="/sistema" class="search-box">
+                <input
+                    type="text"
+                    id="buscaTabela"
+                    name="busca"
+                    value="{{ busca }}"
+                    placeholder="Buscar por nome..."
+                    onkeyup="buscarTempoReal()"
+                >
+            </form>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Nascimento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr>
+                            <td>{{ u[0] }}</td>
+                            <td>{{ u[1] }}</td>
+                            <td>{{ u[4] }}</td>
+                            <td>{{ u[3] }}</td>
+                            <td>
+                                <a class="action edit" href="/editar/{{ u[0] }}">Editar</a>
+                                <a class="action delete" href="/deletar/{{ u[0] }}">Excluir</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+</div>
+
+</body>
+</html>

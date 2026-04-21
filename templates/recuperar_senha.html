@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recuperar Senha</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    radial-gradient(circle at top left,#1e293b 0%,#0f172a 35%,#020617 100%);
+    color:#e2e8f0;
+    padding:20px;
+}
+
+.box{
+    width:100%;
+    max-width:420px;
+    background:rgba(15,23,42,0.85);
+    border:1px solid rgba(148,163,184,0.12);
+    border-radius:24px;
+    padding:30px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.25);
+    backdrop-filter:blur(10px);
+}
+
+.logo{
+    text-align:center;
+    font-size:30px;
+    font-weight:800;
+    margin-bottom:8px;
+    color:#fff;
+}
+
+.logo span{
+    color:#38bdf8;
+}
+
+.subtitle{
+    text-align:center;
+    color:#94a3b8;
+    margin-bottom:24px;
+    font-size:15px;
+}
+
+.alert{
+    background:rgba(30,64,175,0.18);
+    color:#dbeafe;
+    padding:14px;
+    border-radius:16px;
+    margin-bottom:18px;
+    text-align:center;
+    font-size:14px;
+}
+
+.input-group{
+    margin-bottom:16px;
+}
+
+.input-group label{
+    display:block;
+    margin-bottom:7px;
+    color:#cbd5e1;
+    font-size:14px;
+    font-weight:600;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid rgba(148,163,184,0.15);
+    background:rgba(255,255,255,0.04);
+    color:#fff;
+    outline:none;
+    font-size:15px;
+}
+
+.input-group input::placeholder{
+    color:#94a3b8;
+}
+
+.input-group input:focus{
+    border-color:#38bdf8;
+    box-shadow:0 0 0 3px rgba(56,189,248,0.15);
+}
+
+.btn{
+    width:100%;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+    margin-top:4px;
+}
+
+.btn:hover{
+    filter:brightness(1.05);
+}
+
+.link-back{
+    display:block;
+    text-align:center;
+    margin-top:18px;
+    color:#38bdf8;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.link-back:hover{
+    text-decoration:underline;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+    <div class="logo">Empresa<span>+</span></div>
+    <div class="subtitle">Recuperação de senha do sistema</div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="input-group">
+            <label>Nome de usuário</label>
+            <input type="text" name="nome" placeholder="Digite seu usuário">
+        </div>
+
+        <div class="input-group">
+            <label>E-mail cadastrado</label>
+            <input type="email" name="email" placeholder="Digite seu e-mail">
+        </div>
+
+        <button type="submit" class="btn">Enviar nova senha</button>
+    </form>
+
+    <a href="/" class="link-back">Voltar para o login</a>
+</div>
+
+</body>
+</html>
