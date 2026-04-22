@@ -376,9 +376,10 @@ function formatarCPF(campo){
 
     <form method="POST" action="/usuarios/cadastrar">
         <div class="form-grid">
-            <input name="nome" placeholder="Nome do usuário">
-            <input type="password" name="senha" placeholder="Senha do usuário">
-            <select name="cargo">
+            <input type="text" name="nome" placeholder="Nome do usuário" required>
+            <input type="email" name="email" placeholder="E-mail do usuário" required>
+            <input type="password" name="senha" placeholder="Senha do usuário" required>
+            <select name="cargo" required>
                 <option value="">Selecione o cargo</option>
                 <option value="Admin">Admin</option>
                 <option value="Gerente">Gerente</option>
@@ -401,6 +402,7 @@ function formatarCPF(campo){
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
+                    <th>E-mail</th>
                     <th>Cargo</th>
                     <th>Ações</th>
                 </tr>
@@ -411,6 +413,7 @@ function formatarCPF(campo){
                 <tr>
                     <td>{{ u[0] }}</td>
                     <td>{{ u[1] }}</td>
+                    <td>{{ u[3] }}</td>
                     <td>
                         {% if u[2] == "Admin" %}
                             <span class="badge badge-admin">Admin</span>

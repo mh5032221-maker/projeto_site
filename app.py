@@ -1,31 +1,31 @@
-from flask import Flask, render_template, request, redirect, session, flash, send_file
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timedelta
-from decimal import Decimal
-from collections import OrderedDict
-from models import conectar, criar_tabelas
+import os
 import io
 import smtplib
 import random
 import string
+from datetime import datetime, timedelta
+from decimal import Decimal
+from collections import OrderedDict
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+from flask import Flask, render_template, request, redirect, session, flash, send_file
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from models import conectar, criar_tabelas
+
 app = Flask(__name__)
-app.secret_key = "super_secret_key"
+app.secret_key = os.getenv("SECRET_KEY", "super_secret_key")
 
 app.config["SESSION_PERMANENT"] = True
 app.permanent_session_lifetime = timedelta(hours=8)
 
-EMAIL_REMETENTE = "SEUEMAIL@gmail.com"
-SENHA_APP = "SUA_SENHA_DE_APP"
+EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE")
+SENHA_APP = os.getenv("SENHA_APP")
 
 criar_tabelas()
 
 
-# ==================================================
-# FUNÇÕES BASE
-# ==================================================
 def login_obrigatorio():
     return "user" in session
 
@@ -82,20 +82,16 @@ def validar_forca_senha(senha):
     return True, ""
 
 
-# ==================================================
-# ADMIN PADRÃO
-# ==================================================
 def criar_admin_padrao():
     con = conectar()
     cur = con.cursor()
 
-    # garante coluna email em usuarios
     cur.execute("""
         ALTER TABLE usuarios
         ADD COLUMN IF NOT EXISTS email VARCHAR(150)
     """)
 
-    cur.execute("SELECT id, cargo FROM usuarios WHERE nome=%s", ("Maycon",))
+    cur.execute("SELECT id FROM usuarios WHERE nome=%s", ("Maycon",))
     existe = cur.fetchone()
 
     senha_hash = generate_password_hash("12123$")
@@ -104,7 +100,7 @@ def criar_admin_padrao():
         cur.execute("""
             INSERT INTO usuarios (nome, senha, cargo, email)
             VALUES (%s, %s, %s, %s)
-        """, ("Maycon", senha_hash, "Admin", "SEUEMAIL@gmail.com"))
+        """, ("Maycon", senha_hash, "Admin", EMAIL_REMETENTE or "admin@email.com"))
     else:
         cur.execute("""
             UPDATE usuarios
@@ -120,9 +116,6 @@ def criar_admin_padrao():
 criar_admin_padrao()
 
 
-# ==================================================
-# MÉTRICAS
-# ==================================================
 def calcular_metricas():
     con = conectar()
     cur = con.cursor()
@@ -133,10 +126,10 @@ def calcular_metricas():
     cur.execute("SELECT COUNT(*) FROM clientes WHERE status='Ativo'")
     clientes_ativos = cur.fetchone()[0]
 
-    cur.execute("SELECT COALESCE(SUM(valor),0) FROM financeiro WHERE tipo='Entrada'")
+    cur.execute("SELECT COALESCE(SUM(valor), 0) FROM financeiro WHERE tipo='Entrada'")
     total_entradas = cur.fetchone()[0] or 0
 
-    cur.execute("SELECT COALESCE(SUM(valor),0) FROM financeiro WHERE tipo='Saída'")
+    cur.execute("SELECT COALESCE(SUM(valor), 0) FROM financeiro WHERE tipo='Saída'")
     total_saidas = cur.fetchone()[0] or 0
 
     saldo = Decimal(total_entradas) - Decimal(total_saidas)
@@ -178,9 +171,6 @@ def calcular_metricas():
     }
 
 
-# ==================================================
-# LOGIN
-# ==================================================
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -212,9 +202,6 @@ def login():
     return render_template("login.html")
 
 
-# ==================================================
-# RECUPERAR SENHA
-# ==================================================
 @app.route("/recuperar-senha", methods=["GET", "POST"])
 def recuperar_senha():
     if request.method == "POST":
@@ -295,9 +282,6 @@ Equipe Empresa+
     return render_template("recuperar_senha.html")
 
 
-# ==================================================
-# DASHBOARD
-# ==================================================
 @app.route("/dashboard")
 def dashboard():
     if not login_obrigatorio():
@@ -361,9 +345,6 @@ def dashboard():
     )
 
 
-# ==================================================
-# USUÁRIOS DO SISTEMA
-# ==================================================
 @app.route("/usuarios/cadastrar", methods=["POST"])
 def cadastrar_usuario():
     if not login_obrigatorio():
@@ -450,9 +431,6 @@ def excluir_usuario(id):
     return redirect("/dashboard")
 
 
-# ==================================================
-# CLIENTES
-# ==================================================
 @app.route("/clientes/cadastrar", methods=["POST"])
 def cadastrar_cliente():
     if not login_obrigatorio():
@@ -611,9 +589,6 @@ def excluir_cliente(id):
     return redirect("/dashboard")
 
 
-# ==================================================
-# FINANCEIRO
-# ==================================================
 @app.route("/financeiro/lancar", methods=["POST"])
 def lancar_financeiro():
     if not login_obrigatorio():
@@ -650,9 +625,6 @@ def lancar_financeiro():
     return redirect("/dashboard")
 
 
-# ==================================================
-# E-MAIL CLIENTE
-# ==================================================
 @app.route("/enviar/email/<int:id>")
 def enviar_email_cliente(id):
     if not login_obrigatorio():
@@ -692,7 +664,6 @@ Estamos entrando em contato pela Empresa+.
 Atenciosamente,
 Equipe Empresa+
 """
-
         msg.attach(MIMEText(texto, "plain"))
 
         servidor = smtplib.SMTP("smtp.gmail.com", 587)
@@ -702,16 +673,12 @@ Equipe Empresa+
         servidor.quit()
 
         flash("E-mail enviado com sucesso.")
-
     except Exception as e:
         flash(f"Erro ao enviar e-mail: {str(e)}")
 
     return redirect("/dashboard")
 
 
-# ==================================================
-# EXPORTAR EXCEL
-# ==================================================
 @app.route("/exportar/excel")
 def exportar_excel():
     if not login_obrigatorio():
@@ -759,9 +726,6 @@ def exportar_excel():
     )
 
 
-# ==================================================
-# LOGOUT
-# ==================================================
 @app.route("/logout")
 def logout():
     session.clear()
